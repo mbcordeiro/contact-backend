@@ -1,6 +1,7 @@
 package com.matheuscordeiro.contact.services;
 
 import com.matheuscordeiro.contact.exceptions.AuthenticationErrorException;
+import com.matheuscordeiro.contact.exceptions.BusinessException;
 import com.matheuscordeiro.contact.models.User;
 import com.matheuscordeiro.contact.repositories.UserRepository;
 import com.matheuscordeiro.contact.services.interfaces.IUserService;
@@ -16,6 +17,15 @@ public class UserService implements IUserService {
     UserRepository userRepository;
 
     @Override
+    public User authenticateOrThrow(String username, String password) {
+        try {
+          return authenticate(username, password);
+        } catch (AuthenticationErrorException e) {
+            throw new AuthenticationErrorException("Erro ao autenticar usuário");
+        }
+    }
+
+    @Override
     public User authenticate(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
 
@@ -24,6 +34,15 @@ public class UserService implements IUserService {
         if (!user.get().getPassword().equals(password))
             throw new AuthenticationErrorException("Senha inromada não encontrada");
         return user.get();
+    }
+
+    @Override
+    public User saveUserOrThrow(User user) {
+        try {
+            return saveUser(user);
+        } catch (BusinessException e) {
+            throw new BusinessException("Não foi possível salvar o usuário");
+        }
     }
 
     @Override
