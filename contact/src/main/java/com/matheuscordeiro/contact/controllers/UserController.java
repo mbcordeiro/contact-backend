@@ -13,7 +13,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/authenticate")
+    @GetMapping("/authenticate")
     public ResponseEntity<User> authenticate(@RequestBody User user) {
         return ResponseEntity.ok(userService.authenticateOrThrow(user.getUsername(), user.getPassword()));
     }
